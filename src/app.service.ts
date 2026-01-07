@@ -11,18 +11,16 @@ export class AppService {
 
   /**
    * DB 연결 상태 확인
-   * - User, Reading 테이블 레코드 수 조회
+   * - User 테이블 레코드 수 조회
    */
   async checkDatabase() {
     try {
       const userCount = await this.prisma.user.count();
-      const readingCount = await this.prisma.reading.count();
 
       return {
         connected: true,
         tables: {
           users: userCount,
-          readings: readingCount,
         },
       };
     } catch (error) {
