@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { UsersDto } from '../users/dto/user.dto';
 import { ValidateUsersDto } from 'src/users/dto/validate-user.dto';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -20,17 +19,12 @@ export class AuthService {
         where: { email: loginUser.email },
       });
       if (user) {
-        // TODO: picture TS 에러 및 처리
         return user;
       } else {
-        const newUser: UsersDto = {
-          id: randomUUID(),
+        const newUser: ValidateUsersDto = {
           email: loginUser.email,
-          nickname: loginUser.email.split('@')[0],
           googleId: loginUser.googleId,
           picture: loginUser.picture,
-          createdAt: new Date(),
-          updatedAt: new Date(),
         };
 
         return this.usersService.createUser(newUser);
@@ -47,6 +41,7 @@ export class AuthService {
     };
 
     return {
+      // jwt 토큰 생성
       access_token: this.jwtService.sign(payload),
       user,
     };
