@@ -28,8 +28,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       picture,
     };
 
-    // TODO: Refresh token 구현 필요
-
     // validateGoogleUser가 User를 찾거나 생성하고 반환함
     const user = await this.authService.validateGoogleUser(loginUser);
     return user;
