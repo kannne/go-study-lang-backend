@@ -1,7 +1,4 @@
-export class UsersDto {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
+export class CreateUsersDto {
   email: string;
   nickname: string;
   googleId: string;

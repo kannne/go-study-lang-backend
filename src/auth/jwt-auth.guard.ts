@@ -1,22 +1,11 @@
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { GoogleStrategy } from './strategies/google.strategy';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
-@Module({
-  imports: [
-    PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      // TODO: TS에러 확인 필요
-      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy, JwtStrategy],
-  exports: [AuthService],  // 다른 모듈에서 AuthService 사용 가능
-})
-export class AuthModule {}
+/**
+ * JWT 인증 Guard
+ *
+ * @UseGuards(JwtAuthGuard)를 사용하여 컨트롤러 메서드를 보호
+ * JwtStrategy의 validate 메서드를 실행하여 JWT 토큰 검증
+ */
+@Injectable()
+export class JwtAuthGuard extends AuthGuard('jwt') {}

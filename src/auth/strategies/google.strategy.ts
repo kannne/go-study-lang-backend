@@ -9,10 +9,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     private authService: AuthService
   ) {
     super({
-      // TODO: TS에러 해결하기
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      clientID: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:4041/auth/google/callback',
       scope: ['email', 'profile'],
     });
   }
@@ -21,19 +20,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     accessToken: string,
     refreshToken: string,
     profile: { _json: { sub: string; email: string; picture: string } },
-  ): Promise<any> {
-    try {
-      const { sub, email, picture } = profile._json;
-      const loginUser = {
-        email: email,
-        googleId: sub,
-        picture: picture,
-      };
-      await this.authService.validateGoogleUser(loginUser);
-      // 바로 객체 반환
-      return loginUser;
-    } catch (err) {
-      return err;
-    }
+  ) {
+    const { sub, email, picture } = profile._json;
+    const loginUser = {
+      email,
+      googleId: sub,
+      picture,
+    };
+
+    // validateGoogleUser가 User를 찾거나 생성하고 반환함
+    const user = await this.authService.validateGoogleUser(loginUser);
+    return user;
   }
 }
